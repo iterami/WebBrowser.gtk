@@ -5,15 +5,30 @@
 
 void activate(GtkApplication* app, gpointer data){
     GtkAccelGroup *accelgroup;
+    GtkWidget *box;
     GtkWidget *menubar;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menuitem_file;
     GtkWidget *menumenu_file;
-    GtkWidget *outerbox;
 
     gtk_init_gtk(
       app,
       "WebBrowser.gtk"
+    );
+
+    // Setup scrollable notebook.
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_popup_enable(notebook);
+    gtk_notebook_set_scrollable(
+      notebook,
+      TRUE
+    );
+
+    // Setup main tab.
+    gtk_notebook_append_page(
+      notebook,
+      gtk_label_new(""),
+      gtk_label_new("H")
     );
 
     // Setup menu items.
@@ -51,20 +66,27 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Add everything to a box and show.
-    outerbox = gtk_box_new(
+    box = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
     );
     gtk_box_pack_start(
-      GTK_BOX(outerbox),
+      GTK_BOX(box),
       menubar,
       FALSE,
       FALSE,
       0
     );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      GTK_WIDGET(notebook),
+      TRUE,
+      TRUE,
+      0
+    );
     gtk_container_add(
       GTK_CONTAINER(window),
-      outerbox
+      box
     );
     gtk_widget_show_all(window);
 }
