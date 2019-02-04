@@ -10,8 +10,8 @@
 GtkNotebook *notebook;
 
 void activate(GtkApplication* app, gpointer data);
-void close_tab(void);
 int main(int argc, char **argv);
+void menu_closetab(void);
 void menu_movetableft(void);
 void menu_movetabright(void);
-void new_tab(void);
+void menu_newtab(void);

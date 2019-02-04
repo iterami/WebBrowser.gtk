@@ -118,7 +118,7 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect_swapped(
       menuitem_file_closetab,
       "activate",
-      G_CALLBACK(close_tab),
+      G_CALLBACK(menu_closetab),
       NULL
     );
     g_signal_connect_swapped(
@@ -136,7 +136,7 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect_swapped(
       menuitem_file_newtab,
       "activate",
-      G_CALLBACK(new_tab),
+      G_CALLBACK(menu_newtab),
       NULL
     );
     g_signal_connect_swapped(
@@ -184,17 +184,6 @@ void activate(GtkApplication* app, gpointer data){
     gtk_widget_show_all(window);
 }
 
-void close_tab(void){
-    if(gtk_notebook_get_current_page(notebook) <= 0){
-        return;
-    }
-
-    gtk_notebook_remove_page(
-      notebook,
-      gtk_notebook_get_current_page(notebook)
-    );
-}
-
 int main(int argc, char **argv){
     GtkApplication *app;
 
@@ -216,6 +205,17 @@ int main(int argc, char **argv){
     g_object_unref(app);
 
     return status;
+}
+
+void menu_closetab(void){
+    if(gtk_notebook_get_current_page(notebook) <= 0){
+        return;
+    }
+
+    gtk_notebook_remove_page(
+      notebook,
+      gtk_notebook_get_current_page(notebook)
+    );
 }
 
 void menu_movetableft(void){
@@ -250,7 +250,7 @@ void menu_movetabright(void){
     );
 }
 
-void new_tab(void){
+void menu_newtab(void){
     WebKitWebView *view;
 
     view = WEBKIT_WEB_VIEW(webkit_web_view_new());
