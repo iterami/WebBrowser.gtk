@@ -266,6 +266,7 @@ void new_tab(void){
       notebook,
       gtk_notebook_get_n_pages(notebook) - 1
     );
+    gtk_widget_grab_focus(GTK_WIDGET(view));
 
     webkit_web_view_load_uri(
       view,
