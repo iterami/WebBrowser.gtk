@@ -9,9 +9,14 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *box;
     GtkWidget *menubar;
     GtkWidget *menuitem_file;
+    GtkWidget *menuitem_file_closetab;
+    GtkWidget *menuitem_file_movetableft;
+    GtkWidget *menuitem_file_movetabright;
+    GtkWidget *menuitem_file_newtab;
+    GtkWidget *menuitem_file_nexttab;
+    GtkWidget *menuitem_file_previoustab;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menumenu_file;
-    WebKitWebView *view;
 
     gtk_init_gtk(
       app,
@@ -27,15 +32,10 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Setup main tab.
-    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
     gtk_notebook_append_page(
       notebook,
-      GTK_WIDGET(view),
+      gtk_label_new(""),
       gtk_label_new("H")
-    );
-    webkit_web_view_load_uri(
-      view,
-      "https://iterami.com"
     );
 
     // Setup menu items.
@@ -52,6 +52,56 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_ITEM(menuitem_file),
       menumenu_file
     );
+    menuitem_file_newtab = gtk_add_menuitem(
+      menumenu_file,
+      "_New Tab",
+      accelgroup,
+      KEY_NEWTAB,
+      GDK_CONTROL_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_file),
+      gtk_separator_menu_item_new()
+    );
+    menuitem_file_nexttab = gtk_add_menuitem(
+      menumenu_file,
+      "_Next Tab",
+      accelgroup,
+      KEY_NEXTTAB,
+      GDK_CONTROL_MASK
+    );
+    menuitem_file_previoustab = gtk_add_menuitem(
+      menumenu_file,
+      "_Previous Tab",
+      accelgroup,
+      KEY_PREVIOUSTAB,
+      GDK_CONTROL_MASK
+    );
+    menuitem_file_movetableft = gtk_add_menuitem(
+      menumenu_file,
+      "Move Tab _Left",
+      accelgroup,
+      KEY_MOVETABLEFT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+    );
+    menuitem_file_movetabright = gtk_add_menuitem(
+      menumenu_file,
+      "Move Tab _Right",
+      accelgroup,
+      KEY_MOVETABRIGHT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_file),
+      gtk_separator_menu_item_new()
+    );
+    menuitem_file_closetab = gtk_add_menuitem(
+      menumenu_file,
+      "_Close Tab",
+      accelgroup,
+      KEY_CLOSETAB,
+      GDK_CONTROL_MASK
+    );
     menuitem_file_quit = gtk_add_menuitem(
       menumenu_file,
       "_Quit",
@@ -65,6 +115,42 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Setup menu item callbacks.
+    g_signal_connect_swapped(
+      menuitem_file_closetab,
+      "activate",
+      G_CALLBACK(close_tab),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_movetableft,
+      "activate",
+      G_CALLBACK(menu_movetableft),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_movetabright,
+      "activate",
+      G_CALLBACK(menu_movetabright),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_newtab,
+      "activate",
+      G_CALLBACK(new_tab),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_nexttab,
+      "activate",
+      G_CALLBACK(gtk_notebook_next_page),
+      notebook
+    );
+    g_signal_connect_swapped(
+      menuitem_file_previoustab,
+      "activate",
+      G_CALLBACK(gtk_notebook_prev_page),
+      notebook
+    );
     g_signal_connect_swapped(
       menuitem_file_quit,
       "activate",
@@ -98,6 +184,17 @@ void activate(GtkApplication* app, gpointer data){
     gtk_widget_show_all(window);
 }
 
+void close_tab(void){
+    if(gtk_notebook_get_current_page(notebook) <= 0){
+        return;
+    }
+
+    gtk_notebook_remove_page(
+      notebook,
+      gtk_notebook_get_current_page(notebook)
+    );
+}
+
 int main(int argc, char **argv){
     GtkApplication *app;
 
@@ -119,4 +216,59 @@ int main(int argc, char **argv){
     g_object_unref(app);
 
     return status;
+}
+
+void menu_movetableft(void){
+    int position = gtk_notebook_get_current_page(notebook) - 1;
+    if(position < 1){
+        position = gtk_notebook_get_n_pages(notebook) - 1;
+    }
+
+    gtk_notebook_reorder_child(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      position
+    );
+}
+
+void menu_movetabright(void){
+    int position = gtk_notebook_get_current_page(notebook) + 1;
+    if(position >= gtk_notebook_get_n_pages(notebook)){
+        position = 1;
+    }
+
+    gtk_notebook_reorder_child(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      position
+    );
+}
+
+void new_tab(void){
+    WebKitWebView *view;
+
+    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+
+    gtk_notebook_append_page(
+      notebook,
+      GTK_WIDGET(view),
+      gtk_label_new("UNSAVED")
+    );
+    gtk_widget_show_all(window);
+
+    gtk_notebook_set_current_page(
+      notebook,
+      gtk_notebook_get_n_pages(notebook) - 1
+    );
+
+    webkit_web_view_load_uri(
+      view,
+      "https://iterami.com"
+    );
 }

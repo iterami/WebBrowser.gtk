@@ -1,6 +1,17 @@
 #pragma once
 
+#define KEY_CLOSETAB GDK_KEY_w
+#define KEY_MOVETABLEFT GDK_KEY_underscore
+#define KEY_MOVETABRIGHT GDK_KEY_plus
+#define KEY_NEWTAB GDK_KEY_t
+#define KEY_NEXTTAB GDK_KEY_equal
+#define KEY_PREVIOUSTAB GDK_KEY_minus
+
 GtkNotebook *notebook;
 
 void activate(GtkApplication* app, gpointer data);
+void close_tab(void);
 int main(int argc, char **argv);
+void menu_movetableft(void);
+void menu_movetabright(void);
+void new_tab(void);
