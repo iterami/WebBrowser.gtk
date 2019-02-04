@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <webkit2/webkit2.h>
 #include "main.h"
 #include "../../common/c/core.c"
 #include "../../common/c/gtk.c"
@@ -7,9 +8,10 @@ void activate(GtkApplication* app, gpointer data){
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
     GtkWidget *menubar;
-    GtkWidget *menuitem_file_quit;
     GtkWidget *menuitem_file;
+    GtkWidget *menuitem_file_quit;
     GtkWidget *menumenu_file;
+    WebKitWebView *view;
 
     gtk_init_gtk(
       app,
@@ -25,10 +27,15 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Setup main tab.
+    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
     gtk_notebook_append_page(
       notebook,
-      gtk_label_new(""),
+      GTK_WIDGET(view),
       gtk_label_new("H")
+    );
+    webkit_web_view_load_uri(
+      view,
+      "https://iterami.com"
     );
 
     // Setup menu items.
