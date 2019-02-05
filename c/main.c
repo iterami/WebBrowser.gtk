@@ -17,6 +17,7 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_file_previoustab;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menumenu_file;
+    WebKitWebView *view;
 
     gtk_init_gtk(
       app,
@@ -29,13 +30,6 @@ void activate(GtkApplication* app, gpointer data){
     gtk_notebook_set_scrollable(
       notebook,
       TRUE
-    );
-
-    // Setup main tab.
-    gtk_notebook_append_page(
-      notebook,
-      gtk_label_new(""),
-      gtk_label_new("H")
     );
 
     // Setup menu items.
@@ -158,7 +152,7 @@ void activate(GtkApplication* app, gpointer data){
       window
     );
 
-    // Add everything to a box and show.
+    // Add everything to a box.
     box = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
@@ -181,6 +175,19 @@ void activate(GtkApplication* app, gpointer data){
       GTK_CONTAINER(window),
       box
     );
+
+    // Setup main tab.
+    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    gtk_notebook_append_page(
+      notebook,
+      GTK_WIDGET(view),
+      gtk_label_new("H")
+    );
+    webkit_web_view_load_uri(
+      view,
+      "https://iterami.com"
+    );
+
     gtk_widget_show_all(window);
 }
 
@@ -251,17 +258,80 @@ void menu_movetabright(void){
 }
 
 void menu_newtab(void){
+    GtkWidget *box;
+    GtkWidget *innerbox;
     WebKitWebView *view;
 
-    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    box = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      0
+    );
+    innerbox = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      0
+    );
 
+    // Setup tab toolbar.
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_label("Back"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_label("Forward"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_label("Reload"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_label("Stop"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_entry_new(),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      innerbox,
+      FALSE,
+      FALSE,
+      0
+    );
+
+    // Setup tab view.
+    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      GTK_WIDGET(view),
+      TRUE,
+      TRUE,
+      0
+    );
+
+    // Append and show.
     gtk_notebook_append_page(
       notebook,
-      GTK_WIDGET(view),
+      GTK_WIDGET(box),
       gtk_label_new("UNSAVED")
     );
     gtk_widget_show_all(window);
-
     gtk_notebook_set_current_page(
       notebook,
       gtk_notebook_get_n_pages(notebook) - 1
