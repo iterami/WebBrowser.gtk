@@ -17,11 +17,53 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_file_previoustab;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menumenu_file;
+    GtkWidget *toolbar;
     WebKitWebView *view;
 
     gtk_init_gtk(
       app,
       "WebBrowser.gtk"
+    );
+
+    // Setup toolbar.
+    toolbar = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(toolbar),
+      gtk_button_new_with_label("Back"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(toolbar),
+      gtk_button_new_with_label("Forward"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(toolbar),
+      gtk_button_new_with_label("Reload"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(toolbar),
+      gtk_button_new_with_label("Stop"),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(toolbar),
+      gtk_entry_new(),
+      TRUE,
+      TRUE,
+      0
     );
 
     // Setup scrollable notebook.
@@ -166,6 +208,13 @@ void activate(GtkApplication* app, gpointer data){
     );
     gtk_box_pack_start(
       GTK_BOX(box),
+      toolbar,
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
       GTK_WIDGET(notebook),
       TRUE,
       TRUE,
@@ -258,78 +307,16 @@ void menu_movetabright(void){
 }
 
 void menu_newtab(void){
-    GtkWidget *box;
-    GtkWidget *innerbox;
     WebKitWebView *view;
-
-    box = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      0
-    );
-    innerbox = gtk_box_new(
-      GTK_ORIENTATION_HORIZONTAL,
-      0
-    );
-
-    // Setup tab toolbar.
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      gtk_button_new_with_label("Back"),
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      gtk_button_new_with_label("Forward"),
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      gtk_button_new_with_label("Reload"),
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      gtk_button_new_with_label("Stop"),
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      gtk_entry_new(),
-      TRUE,
-      TRUE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(box),
-      innerbox,
-      FALSE,
-      FALSE,
-      0
-    );
 
     // Setup tab view.
     view = WEBKIT_WEB_VIEW(webkit_web_view_new());
-    gtk_box_pack_start(
-      GTK_BOX(box),
-      GTK_WIDGET(view),
-      TRUE,
-      TRUE,
-      0
-    );
 
     // Append and show.
     gtk_notebook_append_page(
       notebook,
-      GTK_WIDGET(box),
-      gtk_label_new("UNSAVED")
+      GTK_WIDGET(view),
+      gtk_label_new("NEW TAB")
     );
     gtk_widget_show_all(window);
     gtk_notebook_set_current_page(
