@@ -269,6 +269,13 @@ void activate(GtkApplication* app, gpointer data){
     gtk_widget_show_all(window);
 }
 
+WebKitWebView* get_tab_view(void){
+    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
+      notebook,
+      gtk_notebook_get_current_page(notebook)
+    ));
+}
+
 int main(int argc, char **argv){
     GtkApplication *app;
 
@@ -361,13 +368,29 @@ void menu_newtab(void){
 }
 
 void toolbar_back(void){
+    WebKitWebView *view;
+
+    view = get_tab_view();
+
+    if(webkit_web_view_can_go_back(view)){
+        webkit_web_view_go_back(view);
+    }
 }
 
 void toolbar_forward(void){
+    WebKitWebView *view;
+
+    view = get_tab_view();
+
+    if(webkit_web_view_can_go_forward(view)){
+        webkit_web_view_go_forward(view);
+    }
 }
 
 void toolbar_reload(void){
+    webkit_web_view_reload(get_tab_view());
 }
 
 void toolbar_stop(void){
+    webkit_web_view_stop_loading(get_tab_view());
 }

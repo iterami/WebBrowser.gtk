@@ -15,6 +15,7 @@ GtkWidget *button_toolbar_stop;
 GtkWidget *entry_toolbar_address;
 
 void activate(GtkApplication* app, gpointer data);
+WebKitWebView* get_tab_view(void);
 int main(int argc, char **argv);
 void menu_closetab(void);
 void menu_movetableft(void);
