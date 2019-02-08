@@ -30,45 +30,69 @@ void activate(GtkApplication* app, gpointer data){
       GTK_ORIENTATION_HORIZONTAL,
       0
     );
-    toolbar_back = gtk_button_new_with_label("Back");
+    button_toolbar_back = gtk_button_new_with_label("Back");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      toolbar_back,
+      button_toolbar_back,
       FALSE,
       FALSE,
       0
     );
-    toolbar_forward = gtk_button_new_with_label("Forward");
+    button_toolbar_forward = gtk_button_new_with_label("Forward");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      toolbar_forward,
+      button_toolbar_forward,
       FALSE,
       FALSE,
       0
     );
-    toolbar_reload = gtk_button_new_with_label("Reload");
+    button_toolbar_reload = gtk_button_new_with_label("Reload");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      toolbar_reload,
+      button_toolbar_reload,
       FALSE,
       FALSE,
       0
     );
-    toolbar_stop = gtk_button_new_with_label("Stop");
+    button_toolbar_stop = gtk_button_new_with_label("Stop");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      toolbar_stop,
+      button_toolbar_stop,
       FALSE,
       FALSE,
       0
     );
-    toolbar_address = gtk_entry_new();
+    entry_toolbar_address = gtk_entry_new();
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      toolbar_address,
+      entry_toolbar_address,
       TRUE,
       TRUE,
       0
+    );
+    g_signal_connect(
+      button_toolbar_back,
+      "clicked",
+      G_CALLBACK(toolbar_back),
+      NULL
+    );
+    g_signal_connect(
+      button_toolbar_forward,
+      "clicked",
+      G_CALLBACK(toolbar_forward),
+      NULL
+    );
+    g_signal_connect(
+      button_toolbar_reload,
+      "clicked",
+      G_CALLBACK(toolbar_reload),
+      NULL
+    );
+    g_signal_connect(
+      button_toolbar_stop,
+      "clicked",
+      G_CALLBACK(toolbar_stop),
+      NULL
     );
 
     // Setup scrollable notebook.
@@ -334,4 +358,16 @@ void menu_newtab(void){
       view,
       "https://iterami.com"
     );
+}
+
+void toolbar_back(void){
+}
+
+void toolbar_forward(void){
+}
+
+void toolbar_reload(void){
+}
+
+void toolbar_stop(void){
 }
