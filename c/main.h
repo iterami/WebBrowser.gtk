@@ -6,6 +6,7 @@
 #define KEY_NEWTAB GDK_KEY_t
 #define KEY_NEXTTAB GDK_KEY_equal
 #define KEY_PREVIOUSTAB GDK_KEY_minus
+#define KEY_RELOAD GDK_KEY_r
 
 GtkNotebook *notebook;
 GtkWidget *button_toolbar_back;

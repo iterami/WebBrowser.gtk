@@ -16,7 +16,10 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_file_nexttab;
     GtkWidget *menuitem_file_previoustab;
     GtkWidget *menuitem_file_quit;
+    GtkWidget *menuitem_tab;
+    GtkWidget *menuitem_tab_reload;
     GtkWidget *menumenu_file;
+    GtkWidget *menumenu_tab;
     GtkWidget *toolbar;
     WebKitWebView *view;
 
@@ -178,6 +181,24 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menubar),
       menuitem_file
     );
+    // Tab menu.
+    menumenu_tab = gtk_menu_new();
+    menuitem_tab = gtk_menu_item_new_with_mnemonic("_Tab");
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(menuitem_tab),
+      menumenu_tab
+    );
+    menuitem_tab_reload = gtk_add_menuitem(
+      menumenu_tab,
+      "_Reload",
+      accelgroup,
+      KEY_RELOAD,
+      GDK_CONTROL_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      menuitem_tab
+    );
 
     // Setup menu item callbacks.
     g_signal_connect_swapped(
@@ -221,6 +242,12 @@ void activate(GtkApplication* app, gpointer data){
       "activate",
       G_CALLBACK(gtk_widget_destroy),
       window
+    );
+    g_signal_connect_swapped(
+      menuitem_tab_reload,
+      "activate",
+      G_CALLBACK(toolbar_reload),
+      NULL
     );
 
     // Add everything to a box.
