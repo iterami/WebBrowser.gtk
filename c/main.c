@@ -30,37 +30,42 @@ void activate(GtkApplication* app, gpointer data){
       GTK_ORIENTATION_HORIZONTAL,
       0
     );
+    toolbar_back = gtk_button_new_with_label("Back");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      gtk_button_new_with_label("Back"),
+      toolbar_back,
       FALSE,
       FALSE,
       0
     );
+    toolbar_forward = gtk_button_new_with_label("Forward");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      gtk_button_new_with_label("Forward"),
+      toolbar_forward,
       FALSE,
       FALSE,
       0
     );
+    toolbar_reload = gtk_button_new_with_label("Reload");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      gtk_button_new_with_label("Reload"),
+      toolbar_reload,
       FALSE,
       FALSE,
       0
     );
+    toolbar_stop = gtk_button_new_with_label("Stop");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      gtk_button_new_with_label("Stop"),
+      toolbar_stop,
       FALSE,
       FALSE,
       0
     );
+    toolbar_address = gtk_entry_new();
     gtk_box_pack_start(
       GTK_BOX(toolbar),
-      gtk_entry_new(),
+      toolbar_address,
       TRUE,
       TRUE,
       0

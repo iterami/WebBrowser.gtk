@@ -7,6 +7,11 @@
 #define KEY_NEXTTAB GDK_KEY_equal
 #define KEY_PREVIOUSTAB GDK_KEY_minus
 
+GtkWidget *toolbar_address;
+GtkWidget *toolbar_back;
+GtkWidget *toolbar_forward;
+GtkWidget *toolbar_reload;
+GtkWidget *toolbar_stop;
 GtkNotebook *notebook;
 
 void activate(GtkApplication* app, gpointer data);
