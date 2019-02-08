@@ -194,7 +194,7 @@ void activate(GtkApplication* app, gpointer data){
       window
     );
 
-    // Add everything to a box.
+    // Add everything to a box and show.
     box = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
@@ -224,6 +224,7 @@ void activate(GtkApplication* app, gpointer data){
       GTK_CONTAINER(window),
       box
     );
+    gtk_widget_show_all(window);
 
     // Setup main tab.
     view = WEBKIT_WEB_VIEW(webkit_web_view_new());
@@ -236,8 +237,6 @@ void activate(GtkApplication* app, gpointer data){
       view,
       "https://iterami.com"
     );
-
-    gtk_widget_show_all(window);
 }
 
 int main(int argc, char **argv){
