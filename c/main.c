@@ -34,7 +34,7 @@ void activate(GtkApplication* app, gpointer data){
     );
     // Menu menu.
     menumenu_menu = gtk_menu_new();
-    menuitem_menu = gtk_menu_item_new_with_mnemonic("_Menu");
+    menuitem_menu = gtk_menu_item_new_with_mnemonic("☰");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_menu),
       menumenu_menu
@@ -113,7 +113,7 @@ void activate(GtkApplication* app, gpointer data){
       FALSE,
       0
     );
-    button_toolbar_back = gtk_button_new_with_label("Back");
+    button_toolbar_back = gtk_button_new_with_label("←");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
       button_toolbar_back,
@@ -121,7 +121,7 @@ void activate(GtkApplication* app, gpointer data){
       FALSE,
       0
     );
-    button_toolbar_forward = gtk_button_new_with_label("Forward");
+    button_toolbar_forward = gtk_button_new_with_label("→");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
       button_toolbar_forward,
@@ -129,7 +129,7 @@ void activate(GtkApplication* app, gpointer data){
       FALSE,
       0
     );
-    button_toolbar_reload = gtk_button_new_with_label("Reload");
+    button_toolbar_reload = gtk_button_new_with_label("⟳");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
       button_toolbar_reload,
@@ -137,7 +137,7 @@ void activate(GtkApplication* app, gpointer data){
       FALSE,
       0
     );
-    button_toolbar_stop = gtk_button_new_with_label("Stop");
+    button_toolbar_stop = gtk_button_new_with_label("X");
     gtk_box_pack_start(
       GTK_BOX(toolbar),
       button_toolbar_stop,
