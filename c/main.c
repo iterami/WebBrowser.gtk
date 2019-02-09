@@ -259,7 +259,7 @@ void activate(GtkApplication* app, gpointer data){
     gtk_notebook_append_page(
       notebook,
       GTK_WIDGET(view),
-      gtk_label_new("H")
+      gtk_label_new("⌂")
     );
     webkit_web_view_load_uri(
       view,
