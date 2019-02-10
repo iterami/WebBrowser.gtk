@@ -29,3 +29,4 @@ void toolbar_back(void);
 void toolbar_forward(void);
 void toolbar_reload(void);
 void toolbar_stop(void);
+void view_load_changed(WebKitWebView *view, WebKitLoadEvent load_event, gpointer data);
