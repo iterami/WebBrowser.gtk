@@ -25,6 +25,7 @@ void menu_closetab(void);
 void menu_movetableft(void);
 void menu_movetabright(void);
 void menu_newtab(void);
+void toolbar_address_activate(void);
 void toolbar_back(void);
 void toolbar_forward(void);
 void toolbar_reload(void);

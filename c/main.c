@@ -198,6 +198,12 @@ void activate(GtkApplication* app, gpointer data){
       0
     );
     entry_toolbar_address = gtk_entry_new();
+    g_signal_connect(
+      entry_toolbar_address,
+      "activate",
+      G_CALLBACK(toolbar_address_activate),
+      NULL
+    );
     gtk_box_pack_start(
       GTK_BOX(toolbar),
       entry_toolbar_address,
@@ -450,6 +456,17 @@ void menu_newtab(void){
     webkit_web_view_load_uri(
       view,
       "https://iterami.com"
+    );
+}
+
+void toolbar_address_activate(void){
+    WebKitWebView *view;
+
+    view = get_tab_view();
+
+    webkit_web_view_load_uri(
+      view,
+      gtk_entry_get_text(GTK_ENTRY(entry_toolbar_address))
     );
 }
 
