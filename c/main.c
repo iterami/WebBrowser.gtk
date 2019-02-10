@@ -10,12 +10,18 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menubar;
     GtkWidget *menuitem_menu;
     GtkWidget *menuitem_menu_closetab;
+    GtkWidget *menuitem_menu_copy;
+    GtkWidget *menuitem_menu_cut;
+    GtkWidget *menuitem_menu_delete;
+    GtkWidget *menuitem_menu_insert;
     GtkWidget *menuitem_menu_movetableft;
     GtkWidget *menuitem_menu_movetabright;
     GtkWidget *menuitem_menu_newtab;
     GtkWidget *menuitem_menu_nexttab;
+    GtkWidget *menuitem_menu_paste;
     GtkWidget *menuitem_menu_previoustab;
     GtkWidget *menuitem_menu_quit;
+    GtkWidget *menuitem_menu_selectall;
     GtkWidget *menumenu_menu;
     GtkWidget *toolbar;
     WebKitWebView *view;
@@ -44,6 +50,52 @@ void activate(GtkApplication* app, gpointer data){
       "_New Tab",
       accelgroup,
       KEY_NEWTAB,
+      GDK_CONTROL_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_menu),
+      gtk_separator_menu_item_new()
+    );
+    menuitem_menu_copy = gtk_add_menuitem(
+      menumenu_menu,
+      "_Copy",
+      accelgroup,
+      KEY_COPY,
+      GDK_CONTROL_MASK
+    );
+    menuitem_menu_cut = gtk_add_menuitem(
+      menumenu_menu,
+      "Cu_t",
+      accelgroup,
+      KEY_CUT,
+      GDK_CONTROL_MASK
+    );
+    menuitem_menu_paste = gtk_add_menuitem(
+      menumenu_menu,
+      "_Paste",
+      accelgroup,
+      KEY_PASTE,
+      GDK_CONTROL_MASK
+    );
+    menuitem_menu_delete = gtk_add_menuitem(
+      menumenu_menu,
+      "_Delete",
+      accelgroup,
+      KEY_DELETE,
+      0
+    );
+    menuitem_menu_insert = gtk_add_menuitem(
+      menumenu_menu,
+      "Toggle _Overwrite",
+      accelgroup,
+      KEY_INSERT,
+      0
+    );
+    menuitem_menu_selectall = gtk_add_menuitem(
+      menumenu_menu,
+      "_Select All",
+      accelgroup,
+      KEY_SELECTALL,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -228,6 +280,32 @@ void activate(GtkApplication* app, gpointer data){
       "activate",
       G_CALLBACK(gtk_widget_destroy),
       window
+    );
+
+    // Disable nonfunctional menu items.
+    gtk_widget_set_sensitive(
+      menuitem_menu_copy,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_menu_cut,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_menu_delete,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_menu_insert,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_menu_paste,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_menu_selectall,
+      FALSE
     );
 
     // Add everything to a box.
