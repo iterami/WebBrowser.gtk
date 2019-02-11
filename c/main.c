@@ -383,18 +383,20 @@ int main(int argc, char **argv){
 }
 
 void menu_closetab(void){
-    if(gtk_notebook_get_current_page(notebook) <= 0){
+    int page = gtk_notebook_get_current_page(notebook);
+    if(page <= 0){
         return;
     }
 
     gtk_notebook_remove_page(
       notebook,
-      gtk_notebook_get_current_page(notebook)
+      page
     );
 }
 
 void menu_movetableft(void){
-    int position = gtk_notebook_get_current_page(notebook) - 1;
+    int page = gtk_notebook_get_current_page(notebook);
+    int position = page - 1;
     if(position < 0){
         return;
 
@@ -406,14 +408,15 @@ void menu_movetableft(void){
       notebook,
       gtk_notebook_get_nth_page(
         notebook,
-        gtk_notebook_get_current_page(notebook)
+        page
       ),
       position
     );
 }
 
 void menu_movetabright(void){
-    int position = gtk_notebook_get_current_page(notebook) + 1;
+    int page = gtk_notebook_get_current_page(notebook);
+    int position = page + 1;
     if(position <= 1){
         return;
 
@@ -425,7 +428,7 @@ void menu_movetabright(void){
       notebook,
       gtk_notebook_get_nth_page(
         notebook,
-        gtk_notebook_get_current_page(notebook)
+        page
       ),
       position
     );
