@@ -384,6 +384,7 @@ int main(int argc, char **argv){
 
 void menu_closetab(void){
     int page = gtk_notebook_get_current_page(notebook);
+
     if(page <= 0){
         return;
     }
@@ -397,6 +398,7 @@ void menu_closetab(void){
 void menu_movetableft(void){
     int page = gtk_notebook_get_current_page(notebook);
     int position = page - 1;
+
     if(position < 0){
         return;
 
@@ -417,6 +419,7 @@ void menu_movetableft(void){
 void menu_movetabright(void){
     int page = gtk_notebook_get_current_page(notebook);
     int position = page + 1;
+
     if(position <= 1){
         return;
 
