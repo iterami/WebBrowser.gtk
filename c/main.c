@@ -395,7 +395,10 @@ void menu_closetab(void){
 
 void menu_movetableft(void){
     int position = gtk_notebook_get_current_page(notebook) - 1;
-    if(position < 1){
+    if(position < 0){
+        return;
+
+    }else if(position == 0){
         position = gtk_notebook_get_n_pages(notebook) - 1;
     }
 
@@ -411,7 +414,10 @@ void menu_movetableft(void){
 
 void menu_movetabright(void){
     int position = gtk_notebook_get_current_page(notebook) + 1;
-    if(position >= gtk_notebook_get_n_pages(notebook)){
+    if(position <= 1){
+        return;
+
+    }else if(position >= gtk_notebook_get_n_pages(notebook)){
         position = 1;
     }
 
