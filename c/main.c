@@ -338,16 +338,15 @@ void activate(GtkApplication* app, gpointer data){
       box
     );
 
-    // Setup main tab.
-    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
-    gtk_notebook_append_page(
+    // Setup home tab.
+    menu_newtab();
+    gtk_notebook_set_tab_label_text(
       notebook,
-      GTK_WIDGET(view),
-      gtk_label_new("⌂")
-    );
-    webkit_web_view_load_uri(
-      view,
-      "https://iterami.com"
+      gtk_notebook_get_nth_page(
+        notebook,
+        0
+      ),
+      "⌂"
     );
 
     gtk_widget_show_all(window);
@@ -514,18 +513,23 @@ void view_load_changed(WebKitWebView *view, WebKitLoadEvent load_event, gpointer
             GTK_ENTRY(entry_toolbar_address),
             webkit_web_view_get_uri(view)
           );
-          gtk_notebook_set_tab_label_text(
-            notebook,
-            gtk_notebook_get_nth_page(
-              notebook,
-              gtk_notebook_get_current_page(notebook)
-            ),
-            webkit_web_view_get_title(view)
-          );
           gtk_window_set_title(
             GTK_WINDOW(window),
             webkit_web_view_get_title(view)
           );
+
+          int page = gtk_notebook_get_current_page(notebook);
+          if(page > 0){
+              gtk_notebook_set_tab_label_text(
+                notebook,
+                gtk_notebook_get_nth_page(
+                  notebook,
+                  page
+                ),
+                webkit_web_view_get_title(view)
+              );
+          }
+
           break;
     }
 }
