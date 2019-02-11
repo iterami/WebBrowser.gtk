@@ -243,6 +243,12 @@ void activate(GtkApplication* app, gpointer data){
       notebook,
       TRUE
     );
+    g_signal_connect_after(
+      notebook,
+      "switch-page",
+      G_CALLBACK(tab_switch),
+      NULL
+    );
 
     // Setup menu item callbacks.
     g_signal_connect_swapped(
@@ -470,6 +476,37 @@ void menu_newtab(void){
     );
 }
 
+void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data){
+    tab_update_labels();
+}
+
+void tab_update_labels(void){
+    WebKitWebView *view;
+
+    view = get_tab_view();
+
+    gtk_entry_set_text(
+      GTK_ENTRY(entry_toolbar_address),
+      webkit_web_view_get_uri(view)
+    );
+    gtk_window_set_title(
+      GTK_WINDOW(window),
+      webkit_web_view_get_title(view)
+    );
+
+    int page = gtk_notebook_get_current_page(notebook);
+    if(page > 0){
+        gtk_notebook_set_tab_label_text(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            page
+          ),
+          webkit_web_view_get_title(view)
+        );
+    }
+}
+
 void toolbar_address_activate(void){
     WebKitWebView *view;
 
@@ -521,26 +558,7 @@ void view_load_changed(WebKitWebView *view, WebKitLoadEvent load_event, gpointer
           break;
 
       case WEBKIT_LOAD_FINISHED:
-          gtk_entry_set_text(
-            GTK_ENTRY(entry_toolbar_address),
-            webkit_web_view_get_uri(view)
-          );
-          gtk_window_set_title(
-            GTK_WINDOW(window),
-            webkit_web_view_get_title(view)
-          );
-
-          int page = gtk_notebook_get_current_page(notebook);
-          if(page > 0){
-              gtk_notebook_set_tab_label_text(
-                notebook,
-                gtk_notebook_get_nth_page(
-                  notebook,
-                  page
-                ),
-                webkit_web_view_get_title(view)
-              );
-          }
+          tab_update_labels();
 
           break;
     }
