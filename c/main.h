@@ -25,6 +25,7 @@ void menu_closetab(void);
 void menu_movetableft(void);
 void menu_movetabright(void);
 void menu_newtab(void);
+void menu_reload(void);
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data);
 void tab_update_labels(void);
 void toolbar_address_activate(void);

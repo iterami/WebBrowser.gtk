@@ -18,6 +18,7 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_menu_movetabright;
     GtkWidget *menuitem_menu_newtab;
     GtkWidget *menuitem_menu_nexttab;
+    GtkWidget *menuitem_menu_reload;
     GtkWidget *menuitem_menu_paste;
     GtkWidget *menuitem_menu_previoustab;
     GtkWidget *menuitem_menu_quit;
@@ -97,6 +98,17 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_SELECTALL,
       GDK_CONTROL_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_menu),
+      gtk_separator_menu_item_new()
+    );
+    menuitem_menu_reload = gtk_add_menuitem(
+      menumenu_menu,
+      "_Reload, Bypass Cache",
+      accelgroup,
+      KEY_RELOAD,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_menu),
@@ -293,6 +305,12 @@ void activate(GtkApplication* app, gpointer data){
       G_CALLBACK(gtk_widget_destroy),
       window
     );
+    g_signal_connect_swapped(
+      menuitem_menu_reload,
+      "activate",
+      G_CALLBACK(menu_reload),
+      window
+    );
 
     // Disable nonfunctional menu items.
     gtk_widget_set_sensitive(
@@ -474,6 +492,10 @@ void menu_newtab(void){
       view,
       "https://iterami.com"
     );
+}
+
+void menu_reload(void){
+    webkit_web_view_reload_bypass_cache(get_tab_view());
 }
 
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data){
