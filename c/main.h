@@ -7,6 +7,7 @@
 #define KEY_MOVETABRIGHT GDK_KEY_plus
 #define KEY_NEWTAB GDK_KEY_t
 #define KEY_NEXTTAB GDK_KEY_equal
+#define KEY_OPEN GDK_KEY_o
 #define KEY_PREVIOUSTAB GDK_KEY_minus
 #define KEY_RELOAD GDK_KEY_r
 #define KEY_SELECTALL GDK_KEY_a
@@ -25,6 +26,7 @@ void menu_closetab(void);
 void menu_movetableft(void);
 void menu_movetabright(void);
 void menu_newtab(void);
+void menu_openfile(void);
 void menu_reload(void);
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data);
 void tab_update_labels(void);

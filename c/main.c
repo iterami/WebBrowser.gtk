@@ -18,6 +18,7 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_menu_movetabright;
     GtkWidget *menuitem_menu_newtab;
     GtkWidget *menuitem_menu_nexttab;
+    GtkWidget *menuitem_menu_openfile;
     GtkWidget *menuitem_menu_reload;
     GtkWidget *menuitem_menu_paste;
     GtkWidget *menuitem_menu_previoustab;
@@ -51,6 +52,13 @@ void activate(GtkApplication* app, gpointer data){
       "_New Tab",
       accelgroup,
       KEY_NEWTAB,
+      GDK_CONTROL_MASK
+    );
+    menuitem_menu_openfile = gtk_add_menuitem(
+      menumenu_menu,
+      "_Open File...",
+      accelgroup,
+      KEY_OPEN,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -294,6 +302,12 @@ void activate(GtkApplication* app, gpointer data){
       notebook
     );
     g_signal_connect_swapped(
+      menuitem_menu_openfile,
+      "activate",
+      G_CALLBACK(menu_openfile),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_menu_previoustab,
       "activate",
       G_CALLBACK(gtk_notebook_prev_page),
@@ -492,6 +506,48 @@ void menu_newtab(void){
       view,
       "https://iterami.com"
     );
+}
+
+void menu_openfile(void){
+    GtkFileChooser *chooser;
+    GtkWidget *dialog_open;
+
+    dialog_open = gtk_file_chooser_dialog_new(
+      "Open File...",
+      GTK_WINDOW(window),
+      GTK_FILE_CHOOSER_ACTION_OPEN,
+      "_Cancel",
+      GTK_RESPONSE_CANCEL,
+      "_Open",
+      GTK_RESPONSE_ACCEPT,
+      NULL
+    );
+    chooser = GTK_FILE_CHOOSER(dialog_open);
+    gtk_file_chooser_set_show_hidden(
+      chooser,
+      TRUE
+    );
+
+    if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
+        char *filename;
+        WebKitWebView *view;
+
+        filename = gtk_file_chooser_get_filename(chooser);
+        view = get_tab_view();
+
+        gtk_entry_set_text(
+          GTK_ENTRY(entry_toolbar_address),
+          filename
+        );
+        webkit_web_view_load_uri(
+          view,
+          filename
+        );
+
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(dialog_open);
 }
 
 void menu_reload(void){
