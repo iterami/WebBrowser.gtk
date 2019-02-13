@@ -559,14 +559,18 @@ void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpoi
 }
 
 void tab_update_labels(void){
+    const gchar *uri;
     WebKitWebView *view;
 
     view = get_tab_view();
+    uri = webkit_web_view_get_uri(view);
 
-    gtk_entry_set_text(
-      GTK_ENTRY(entry_toolbar_address),
-      webkit_web_view_get_uri(view)
-    );
+    if(uri != NULL){
+        gtk_entry_set_text(
+          GTK_ENTRY(entry_toolbar_address),
+          webkit_web_view_get_uri(view)
+        );
+    }
     gtk_window_set_title(
       GTK_WINDOW(window),
       webkit_web_view_get_title(view)
