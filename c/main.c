@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <string.h>
 #include <webkit2/webkit2.h>
 #include "main.h"
 #include "../../common/c/core.c"
@@ -530,18 +531,28 @@ void menu_openfile(void){
 
     if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
         char *filename;
+        char path[4096];
         WebKitWebView *view;
 
         filename = gtk_file_chooser_get_filename(chooser);
         view = get_tab_view();
 
+        strcpy(
+          path,
+          "file://"
+        );
+        strcat(
+          path,
+          filename
+        );
+
         gtk_entry_set_text(
           GTK_ENTRY(entry_toolbar_address),
-          filename
+          path
         );
         webkit_web_view_load_uri(
           view,
-          filename
+          path
         );
 
         g_free(filename);
