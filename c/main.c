@@ -589,13 +589,24 @@ void tab_update_labels(void){
 
     int page = gtk_notebook_get_current_page(notebook);
     if(page > 0){
+        const gchar *title;
+        GtkWidget *page_widget;
+
+        page_widget = gtk_notebook_get_nth_page(
+          notebook,
+          page
+        );
+        title = webkit_web_view_get_title(view);
+
         gtk_notebook_set_tab_label_text(
           notebook,
-          gtk_notebook_get_nth_page(
-            notebook,
-            page
-          ),
-          webkit_web_view_get_title(view)
+          page_widget,
+          title
+        );
+        gtk_notebook_set_menu_label_text(
+          notebook,
+          page_widget,
+          title
         );
     }
 }
