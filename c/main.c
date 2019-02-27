@@ -8,24 +8,9 @@
 void activate(GtkApplication* app, gpointer data){
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
+    GtkWidget *menu_menu;
     GtkWidget *menubar;
     GtkWidget *menuitem_menu;
-    GtkWidget *menuitem_menu_closetab;
-    GtkWidget *menuitem_menu_copy;
-    GtkWidget *menuitem_menu_cut;
-    GtkWidget *menuitem_menu_delete;
-    GtkWidget *menuitem_menu_insert;
-    GtkWidget *menuitem_menu_movetableft;
-    GtkWidget *menuitem_menu_movetabright;
-    GtkWidget *menuitem_menu_newtab;
-    GtkWidget *menuitem_menu_nexttab;
-    GtkWidget *menuitem_menu_openfile;
-    GtkWidget *menuitem_menu_reload;
-    GtkWidget *menuitem_menu_paste;
-    GtkWidget *menuitem_menu_previoustab;
-    GtkWidget *menuitem_menu_quit;
-    GtkWidget *menuitem_menu_selectall;
-    GtkWidget *menumenu_menu;
     GtkWidget *toolbar;
     WebKitWebView *view;
 
@@ -42,132 +27,162 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup
     );
     // Menu menu.
-    menumenu_menu = gtk_menu_new();
+    menu_menu = gtk_menu_new();
     menuitem_menu = gtk_menu_item_new_with_mnemonic("☰");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_menu),
-      menumenu_menu
+      menu_menu
     );
-    menuitem_menu_newtab = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_New Tab",
       accelgroup,
       KEY_NEWTAB,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_newtab),
+      NULL
     );
-    menuitem_menu_openfile = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Open File...",
       accelgroup,
       KEY_OPEN,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_openfile),
+      NULL
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_menu),
+      GTK_MENU_SHELL(menu_menu),
       gtk_separator_menu_item_new()
     );
-    menuitem_menu_copy = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Copy",
       accelgroup,
       KEY_COPY,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
     );
-    menuitem_menu_cut = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "Cu_t",
       accelgroup,
       KEY_CUT,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
     );
-    menuitem_menu_paste = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Paste",
       accelgroup,
       KEY_PASTE,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
     );
-    menuitem_menu_delete = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Delete",
       accelgroup,
       KEY_DELETE,
-      0
+      0,
+      NULL,
+      NULL
     );
-    menuitem_menu_insert = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "Toggle _Overwrite",
       accelgroup,
       KEY_INSERT,
-      0
+      0,
+      NULL,
+      NULL
     );
-    menuitem_menu_selectall = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Select All",
       accelgroup,
       KEY_SELECTALL,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_menu),
+      GTK_MENU_SHELL(menu_menu),
       gtk_separator_menu_item_new()
     );
-    menuitem_menu_reload = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Reload, Bypass Cache",
       accelgroup,
       KEY_RELOAD,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_reload),
+      window
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_menu),
+      GTK_MENU_SHELL(menu_menu),
       gtk_separator_menu_item_new()
     );
-    menuitem_menu_nexttab = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Next Tab",
       accelgroup,
       KEY_NEXTTAB,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      G_CALLBACK(gtk_notebook_next_page),
+      GTK_WIDGET(notebook)
     );
-    menuitem_menu_previoustab = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Previous Tab",
       accelgroup,
       KEY_PREVIOUSTAB,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      G_CALLBACK(gtk_notebook_prev_page),
+      GTK_WIDGET(notebook)
     );
-    menuitem_menu_movetableft = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "Move Tab _Left",
       accelgroup,
       KEY_MOVETABLEFT,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_movetableft),
+      NULL
     );
-    menuitem_menu_movetabright = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "Move Tab _Right",
       accelgroup,
       KEY_MOVETABRIGHT,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_movetabright),
+      NULL
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_menu),
+      GTK_MENU_SHELL(menu_menu),
       gtk_separator_menu_item_new()
     );
-    menuitem_menu_closetab = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Close Tab",
       accelgroup,
       KEY_CLOSETAB,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_closetab),
+      NULL
     );
-    menuitem_menu_quit = gtk_add_menuitem(
-      menumenu_menu,
+    gtk_add_menuitem(
+      menu_menu,
       "_Quit",
       accelgroup,
       KEY_QUIT,
-      GDK_CONTROL_MASK
+      GDK_CONTROL_MASK,
+      G_CALLBACK(gtk_widget_destroy),
+      window
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
@@ -269,88 +284,6 @@ void activate(GtkApplication* app, gpointer data){
       "switch-page",
       G_CALLBACK(tab_switch),
       NULL
-    );
-
-    // Setup menu item callbacks.
-    g_signal_connect_swapped(
-      menuitem_menu_closetab,
-      "activate",
-      G_CALLBACK(menu_closetab),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_movetableft,
-      "activate",
-      G_CALLBACK(menu_movetableft),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_movetabright,
-      "activate",
-      G_CALLBACK(menu_movetabright),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_newtab,
-      "activate",
-      G_CALLBACK(menu_newtab),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_nexttab,
-      "activate",
-      G_CALLBACK(gtk_notebook_next_page),
-      notebook
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_openfile,
-      "activate",
-      G_CALLBACK(menu_openfile),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_previoustab,
-      "activate",
-      G_CALLBACK(gtk_notebook_prev_page),
-      notebook
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_quit,
-      "activate",
-      G_CALLBACK(gtk_widget_destroy),
-      window
-    );
-    g_signal_connect_swapped(
-      menuitem_menu_reload,
-      "activate",
-      G_CALLBACK(menu_reload),
-      window
-    );
-
-    // Disable nonfunctional menu items.
-    gtk_widget_set_sensitive(
-      menuitem_menu_copy,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_menu_cut,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_menu_delete,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_menu_insert,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_menu_paste,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_menu_selectall,
-      FALSE
     );
 
     // Add everything to a box.
