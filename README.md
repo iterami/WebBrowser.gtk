@@ -1,7 +1,7 @@
 iterami/WebBrowser.gtk
 ----------------------
 
-* Contributing: https://github.com/iterami/Docs.htm/blob/gh-pages/CONTRIBUTING.md
+* Contributing: https://iterami.com/Docs.htm/standards/contributing.htm
 * Docs: https://iterami.com/Docs.htm/repositories/webbrowser-gtk.htm
 * Requires:
   * [iterami/common](https://github.com/iterami/common)
