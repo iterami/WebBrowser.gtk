@@ -316,12 +316,19 @@ void activate(GtkApplication* app, gpointer data){
 
     // Setup home tab.
     menu_newtab();
+    GtkWidget *home_tab;
+    home_tab = gtk_notebook_get_nth_page(
+      notebook,
+      0
+    );
     gtk_notebook_set_tab_label_text(
       notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        0
-      ),
+      home_tab,
+      "⌂"
+    );
+    gtk_notebook_set_menu_label_text(
+      notebook,
+      home_tab,
       "⌂"
     );
 
