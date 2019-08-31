@@ -279,6 +279,10 @@ void activate(GtkApplication* app, gpointer data){
       notebook,
       TRUE
     );
+    gtk_notebook_set_show_border(
+      notebook,
+      FALSE
+    );
     g_signal_connect_after(
       notebook,
       "switch-page",
