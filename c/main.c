@@ -19,6 +19,24 @@ void activate(GtkApplication* app, gpointer data){
       "WebBrowser.gtk"
     );
 
+    // Setup scrollable notebook.
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_popup_enable(notebook);
+    gtk_notebook_set_scrollable(
+      notebook,
+      TRUE
+    );
+    gtk_notebook_set_show_border(
+      notebook,
+      FALSE
+    );
+    g_signal_connect_after(
+      notebook,
+      "switch-page",
+      G_CALLBACK(tab_switch),
+      NULL
+    );
+
     // Setup menu items.
     menubar = gtk_menu_bar_new();
     accelgroup = gtk_accel_group_new();
@@ -163,8 +181,8 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_MOVETABLEFT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_movetableft),
-      NULL
+      G_CALLBACK(menu_movetab),
+      (gpointer)-1
     );
     gtk_add_menuitem(
       menu_menu,
@@ -172,8 +190,8 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_MOVETABRIGHT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_movetabright),
-      NULL
+      G_CALLBACK(menu_movetab),
+      (gpointer)1
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_menu),
@@ -285,24 +303,6 @@ void activate(GtkApplication* app, gpointer data){
       NULL
     );
 
-    // Setup scrollable notebook.
-    notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_popup_enable(notebook);
-    gtk_notebook_set_scrollable(
-      notebook,
-      TRUE
-    );
-    gtk_notebook_set_show_border(
-      notebook,
-      FALSE
-    );
-    g_signal_connect_after(
-      notebook,
-      "switch-page",
-      G_CALLBACK(tab_switch),
-      NULL
-    );
-
     // Add everything to a box.
     box = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
@@ -407,43 +407,31 @@ void menu_devtools(void){
     }
 }
 
-void menu_movetableft(void){
+void menu_movetab(gint movement){
     int page = gtk_notebook_get_current_page(notebook);
-    int position = page - 1;
 
-    if(position < 0){
+    if(page == 0){
         return;
-
-    }else if(position == 0){
-        position = gtk_notebook_get_n_pages(notebook) - 1;
     }
 
-    gtk_notebook_reorder_child(
-      notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        page
-      ),
-      position
-    );
-}
-
-void menu_movetabright(void){
-    int page = gtk_notebook_get_current_page(notebook);
-    int position = page + 1;
+    int position = page + movement;
 
     if(position <= 1){
-        return;
-
-    }else if(position >= gtk_notebook_get_n_pages(notebook)){
         position = 1;
+
+    }else{
+        int pages = gtk_notebook_get_n_pages(notebook);
+
+        if(position >= pages){
+            position = pages - 1;
+        }
     }
 
     gtk_notebook_reorder_child(
       notebook,
       gtk_notebook_get_nth_page(
         notebook,
-        page
+        gtk_notebook_get_current_page(notebook)
       ),
       position
     );
