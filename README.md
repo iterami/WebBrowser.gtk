@@ -5,4 +5,4 @@ iterami/WebBrowser.gtk
 * Docs: https://iterami.com/Docs.htm/repositories/webbrowser-gtk.htm
 * Requires:
   * [iterami/common](https://github.com/iterami/common)
-  * webkit2gtk-3.0
+  * webkit2gtk-4.0-dev
