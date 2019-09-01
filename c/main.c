@@ -57,6 +57,19 @@ void activate(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_menu,
+      "Toggle De_v Tools",
+      accelgroup,
+      KEY_DEVTOOLS,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_devtools),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_menu),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_menu,
       "_Copy",
       accelgroup,
       KEY_COPY,
@@ -376,6 +389,22 @@ void menu_closetab(void){
       notebook,
       page
     );
+}
+
+void menu_devtools(void){
+    WebKitWebInspector *devtools;
+    WebKitWebView *view;
+
+    view = get_tab_view();
+    devtools = webkit_web_view_get_inspector(view);
+
+    if(devtools == NULL
+      || webkit_web_inspector_get_web_view(devtools) == NULL){
+        webkit_web_inspector_show(devtools);
+
+    }else{
+        webkit_web_inspector_close(devtools);
+    }
 }
 
 void menu_movetableft(void){

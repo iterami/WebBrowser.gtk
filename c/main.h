@@ -2,6 +2,7 @@
 
 #define KEY_CLOSETAB GDK_KEY_w
 #define KEY_DELETE GDK_KEY_Delete
+#define KEY_DEVTOOLS GDK_KEY_i
 #define KEY_INSERT GDK_KEY_Insert
 #define KEY_MOVETABLEFT GDK_KEY_underscore
 #define KEY_MOVETABRIGHT GDK_KEY_plus
@@ -23,6 +24,7 @@ void activate(GtkApplication* app, gpointer data);
 WebKitWebView* get_tab_view(void);
 int main(int argc, char **argv);
 void menu_closetab(void);
+void menu_devtools(void);
 void menu_movetableft(void);
 void menu_movetabright(void);
 void menu_newtab(void);
