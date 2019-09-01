@@ -421,10 +421,26 @@ void menu_movetabright(void){
 }
 
 void menu_newtab(void){
+    WebKitSettings *settings;
     WebKitWebView *view;
 
+    // Setup view settings.
+    settings = webkit_settings_new();
+    webkit_settings_set_enable_developer_extras(
+      settings,
+      TRUE
+    );
+    webkit_settings_set_enable_webaudio(
+      settings,
+      TRUE
+    );
+    webkit_settings_set_enable_webgl(
+      settings,
+      TRUE
+    );
+
     // Setup tab view.
-    view = WEBKIT_WEB_VIEW(webkit_web_view_new());
+    view = WEBKIT_WEB_VIEW(webkit_web_view_new_with_settings(settings));
 
     // Append and show.
     gtk_notebook_append_page(
