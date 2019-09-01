@@ -457,7 +457,12 @@ void menu_newtab(void){
     );
 
     // Setup tab view.
+    GdkRGBA background_color = {0, 0, 0, 1,};
     view = WEBKIT_WEB_VIEW(webkit_web_view_new_with_settings(settings));
+    webkit_web_view_set_background_color(
+      view,
+      &background_color
+    );
 
     // Append and show.
     gtk_notebook_append_page(
@@ -478,11 +483,6 @@ void menu_newtab(void){
       "load-changed",
       G_CALLBACK(view_load_changed),
       NULL
-    );
-
-    webkit_web_view_load_uri(
-      view,
-      "https://iterami.com"
     );
 }
 
