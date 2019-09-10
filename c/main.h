@@ -26,7 +26,7 @@ int main(int argc, char **argv);
 void menu_closetab(void);
 void menu_devtools(void);
 void menu_movetab(gint movement);
-void menu_newtab(void);
+void menu_newtab(gchar *title);
 void menu_openfile(void);
 void menu_reload(void);
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data);
