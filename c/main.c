@@ -146,12 +146,21 @@ void activate(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_menu,
-      "_Reload, Bypass Cache",
+      "_Reload",
+      accelgroup,
+      KEY_RELOAD,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_reload),
+      (gpointer)0
+    );
+    gtk_add_menuitem(
+      menu_menu,
+      "Reload, _Bypass Cache",
       accelgroup,
       KEY_RELOAD,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
       G_CALLBACK(menu_reload),
-      window
+      (gpointer)1
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_menu),
@@ -293,8 +302,8 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect(
       button_toolbar_reload,
       "clicked",
-      G_CALLBACK(toolbar_reload),
-      NULL
+      G_CALLBACK(menu_reload),
+      (gpointer)0
     );
     g_signal_connect(
       button_toolbar_stop,
@@ -525,8 +534,13 @@ void menu_openfile(void){
     gtk_widget_destroy(dialog_open);
 }
 
-void menu_reload(void){
-    webkit_web_view_reload_bypass_cache(get_tab_view());
+void menu_reload(const int bypass){
+    if(bypass == 1){
+        webkit_web_view_reload_bypass_cache(get_tab_view());
+
+    }else{
+        webkit_web_view_reload(get_tab_view());
+    }
 }
 
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data){
@@ -627,10 +641,6 @@ void toolbar_forward(void){
     if(webkit_web_view_can_go_forward(view)){
         webkit_web_view_go_forward(view);
     }
-}
-
-void toolbar_reload(void){
-    webkit_web_view_reload(get_tab_view());
 }
 
 void toolbar_stop(void){
