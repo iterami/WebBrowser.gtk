@@ -392,7 +392,7 @@ void menu_devtools(void){
     }
 }
 
-void menu_movetab(gint movement){
+void menu_movetab(const gint movement){
     int page = gtk_notebook_get_current_page(notebook);
 
     if(page == 0){
@@ -422,7 +422,7 @@ void menu_movetab(gint movement){
     );
 }
 
-void menu_newtab(gchar *title){
+void menu_newtab(const gchar *title){
     WebKitSettings *settings;
     WebKitWebView *view;
 
