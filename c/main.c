@@ -337,7 +337,7 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Setup home tab.
-    menu_newtab("⌂");
+    menu_newtab(HOME_TAB_TITLE);
 
     gtk_widget_show_all(window);
 }
@@ -548,6 +548,30 @@ void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpoi
 }
 
 void tab_update_labels(void){
+    int page = gtk_notebook_get_current_page(notebook);
+
+    if(page == 0){
+        gtk_widget_set_sensitive(
+          entry_toolbar_address,
+          FALSE
+        );
+        gtk_entry_set_text(
+          GTK_ENTRY(entry_toolbar_address),
+          "Home Tab"
+        );
+        gtk_window_set_title(
+          GTK_WINDOW(window),
+          HOME_TAB_TITLE
+        );
+        return;
+
+    }else{
+        gtk_widget_set_sensitive(
+          entry_toolbar_address,
+          TRUE
+        );
+    }
+
     GtkWidget *page_widget;
     const gchar *title;
     const gchar *uri;
@@ -555,7 +579,7 @@ void tab_update_labels(void){
 
     page_widget = gtk_notebook_get_nth_page(
       notebook,
-      gtk_notebook_get_current_page(notebook)
+      page
     );
     view = get_tab_view();
     uri = webkit_web_view_get_uri(view);

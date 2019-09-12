@@ -1,5 +1,6 @@
 #pragma once
 
+#define HOME_TAB_TITLE "⌂"
 #define KEY_CLOSETAB GDK_KEY_w
 #define KEY_DELETE GDK_KEY_Delete
 #define KEY_DEVTOOLS GDK_KEY_i
