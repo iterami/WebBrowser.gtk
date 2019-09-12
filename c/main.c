@@ -6,6 +6,217 @@
 #include "../../common/c/gtk.c"
 
 void activate(GtkApplication* app, gpointer data){
+    gtk_window_present(GTK_WINDOW(window));
+}
+
+WebKitWebView* get_tab_view(void){
+    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
+      notebook,
+      gtk_notebook_get_current_page(notebook)
+    ));
+}
+
+int main(int argc, char **argv){
+    GtkApplication *app;
+
+    app = gtk_application_new(
+      "com.iterami.webbrowsergtk",
+      0
+    );
+    g_signal_connect(
+      app,
+      "activate",
+      G_CALLBACK(activate),
+      NULL
+    );
+    g_signal_connect(
+      app,
+      "startup",
+      G_CALLBACK(startup),
+      NULL
+    );
+    int status = g_application_run(
+      G_APPLICATION(app),
+      argc,
+      argv
+    );
+    g_object_unref(app);
+
+    return status;
+}
+
+void menu_closetab(void){
+    int page = gtk_notebook_get_current_page(notebook);
+
+    if(page <= 0){
+        return;
+    }
+
+    gtk_notebook_remove_page(
+      notebook,
+      page
+    );
+}
+
+void menu_devtools(void){
+    WebKitWebInspector *devtools;
+    WebKitWebView *view;
+
+    view = get_tab_view();
+    devtools = webkit_web_view_get_inspector(view);
+
+    if(devtools == NULL
+      || webkit_web_inspector_get_web_view(devtools) == NULL){
+        webkit_web_inspector_show(devtools);
+
+    }else{
+        webkit_web_inspector_close(devtools);
+    }
+}
+
+void menu_movetab(const gint movement){
+    int page = gtk_notebook_get_current_page(notebook);
+
+    if(page == 0){
+        return;
+    }
+
+    int position = page + movement;
+
+    if(position <= 1){
+        position = 1;
+
+    }else{
+        int pages = gtk_notebook_get_n_pages(notebook);
+
+        if(position >= pages){
+            position = pages - 1;
+        }
+    }
+
+    gtk_notebook_reorder_child(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      position
+    );
+}
+
+void menu_newtab(const gchar *title){
+    WebKitSettings *settings;
+    WebKitWebView *view;
+
+    // Setup view settings.
+    settings = webkit_settings_new();
+    webkit_settings_set_enable_developer_extras(
+      settings,
+      TRUE
+    );
+    webkit_settings_set_enable_webaudio(
+      settings,
+      TRUE
+    );
+    webkit_settings_set_enable_webgl(
+      settings,
+      TRUE
+    );
+
+    // Setup tab view.
+    GdkRGBA background_color = {0, 0, 0, 1,};
+    view = WEBKIT_WEB_VIEW(webkit_web_view_new_with_settings(settings));
+    webkit_web_view_set_background_color(
+      view,
+      &background_color
+    );
+
+    // Append and show.
+    gtk_notebook_append_page(
+      notebook,
+      GTK_WIDGET(view),
+      gtk_label_new(title)
+    );
+    gtk_widget_show_all(window);
+    gtk_notebook_set_current_page(
+      notebook,
+      gtk_notebook_get_n_pages(notebook) - 1
+    );
+    gtk_widget_grab_focus(entry_toolbar_address);
+
+    // Setup signals.
+    g_signal_connect(
+      view,
+      "load-changed",
+      G_CALLBACK(view_load_changed),
+      NULL
+    );
+
+    tab_update_labels();
+}
+
+void menu_openfile(void){
+    GtkFileChooser *chooser;
+    GtkWidget *dialog_open;
+
+    dialog_open = gtk_file_chooser_dialog_new(
+      "Open File...",
+      GTK_WINDOW(window),
+      GTK_FILE_CHOOSER_ACTION_OPEN,
+      "_Cancel",
+      GTK_RESPONSE_CANCEL,
+      "_Open",
+      GTK_RESPONSE_ACCEPT,
+      NULL
+    );
+    chooser = GTK_FILE_CHOOSER(dialog_open);
+    gtk_file_chooser_set_show_hidden(
+      chooser,
+      TRUE
+    );
+
+    if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
+        char *filename;
+        char path[4096];
+        WebKitWebView *view;
+
+        filename = gtk_file_chooser_get_filename(chooser);
+        view = get_tab_view();
+
+        strcpy(
+          path,
+          "file://"
+        );
+        strcat(
+          path,
+          filename
+        );
+
+        gtk_entry_set_text(
+          GTK_ENTRY(entry_toolbar_address),
+          path
+        );
+        webkit_web_view_load_uri(
+          view,
+          path
+        );
+
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(dialog_open);
+}
+
+void menu_reload(const int bypass){
+    if(bypass == 1){
+        webkit_web_view_reload_bypass_cache(get_tab_view());
+
+    }else{
+        webkit_web_view_reload(get_tab_view());
+    }
+}
+
+void startup(GtkApplication* app, gpointer data){
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
     GtkWidget *menu_menu;
@@ -340,207 +551,6 @@ void activate(GtkApplication* app, gpointer data){
     menu_newtab(HOME_TAB_TITLE);
 
     gtk_widget_show_all(window);
-}
-
-WebKitWebView* get_tab_view(void){
-    return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
-      notebook,
-      gtk_notebook_get_current_page(notebook)
-    ));
-}
-
-int main(int argc, char **argv){
-    GtkApplication *app;
-
-    app = gtk_application_new(
-      "com.iterami.webbrowsergtk",
-      0
-    );
-    g_signal_connect(
-      app,
-      "activate",
-      G_CALLBACK(activate),
-      NULL
-    );
-    int status = g_application_run(
-      G_APPLICATION(app),
-      argc,
-      argv
-    );
-    g_object_unref(app);
-
-    return status;
-}
-
-void menu_closetab(void){
-    int page = gtk_notebook_get_current_page(notebook);
-
-    if(page <= 0){
-        return;
-    }
-
-    gtk_notebook_remove_page(
-      notebook,
-      page
-    );
-}
-
-void menu_devtools(void){
-    WebKitWebInspector *devtools;
-    WebKitWebView *view;
-
-    view = get_tab_view();
-    devtools = webkit_web_view_get_inspector(view);
-
-    if(devtools == NULL
-      || webkit_web_inspector_get_web_view(devtools) == NULL){
-        webkit_web_inspector_show(devtools);
-
-    }else{
-        webkit_web_inspector_close(devtools);
-    }
-}
-
-void menu_movetab(const gint movement){
-    int page = gtk_notebook_get_current_page(notebook);
-
-    if(page == 0){
-        return;
-    }
-
-    int position = page + movement;
-
-    if(position <= 1){
-        position = 1;
-
-    }else{
-        int pages = gtk_notebook_get_n_pages(notebook);
-
-        if(position >= pages){
-            position = pages - 1;
-        }
-    }
-
-    gtk_notebook_reorder_child(
-      notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        gtk_notebook_get_current_page(notebook)
-      ),
-      position
-    );
-}
-
-void menu_newtab(const gchar *title){
-    WebKitSettings *settings;
-    WebKitWebView *view;
-
-    // Setup view settings.
-    settings = webkit_settings_new();
-    webkit_settings_set_enable_developer_extras(
-      settings,
-      TRUE
-    );
-    webkit_settings_set_enable_webaudio(
-      settings,
-      TRUE
-    );
-    webkit_settings_set_enable_webgl(
-      settings,
-      TRUE
-    );
-
-    // Setup tab view.
-    GdkRGBA background_color = {0, 0, 0, 1,};
-    view = WEBKIT_WEB_VIEW(webkit_web_view_new_with_settings(settings));
-    webkit_web_view_set_background_color(
-      view,
-      &background_color
-    );
-
-    // Append and show.
-    gtk_notebook_append_page(
-      notebook,
-      GTK_WIDGET(view),
-      gtk_label_new(title)
-    );
-    gtk_widget_show_all(window);
-    gtk_notebook_set_current_page(
-      notebook,
-      gtk_notebook_get_n_pages(notebook) - 1
-    );
-    gtk_widget_grab_focus(entry_toolbar_address);
-
-    // Setup signals.
-    g_signal_connect(
-      view,
-      "load-changed",
-      G_CALLBACK(view_load_changed),
-      NULL
-    );
-
-    tab_update_labels();
-}
-
-void menu_openfile(void){
-    GtkFileChooser *chooser;
-    GtkWidget *dialog_open;
-
-    dialog_open = gtk_file_chooser_dialog_new(
-      "Open File...",
-      GTK_WINDOW(window),
-      GTK_FILE_CHOOSER_ACTION_OPEN,
-      "_Cancel",
-      GTK_RESPONSE_CANCEL,
-      "_Open",
-      GTK_RESPONSE_ACCEPT,
-      NULL
-    );
-    chooser = GTK_FILE_CHOOSER(dialog_open);
-    gtk_file_chooser_set_show_hidden(
-      chooser,
-      TRUE
-    );
-
-    if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
-        char *filename;
-        char path[4096];
-        WebKitWebView *view;
-
-        filename = gtk_file_chooser_get_filename(chooser);
-        view = get_tab_view();
-
-        strcpy(
-          path,
-          "file://"
-        );
-        strcat(
-          path,
-          filename
-        );
-
-        gtk_entry_set_text(
-          GTK_ENTRY(entry_toolbar_address),
-          path
-        );
-        webkit_web_view_load_uri(
-          view,
-          path
-        );
-
-        g_free(filename);
-    }
-
-    gtk_widget_destroy(dialog_open);
-}
-
-void menu_reload(const int bypass){
-    if(bypass == 1){
-        webkit_web_view_reload_bypass_cache(get_tab_view());
-
-    }else{
-        webkit_web_view_reload(get_tab_view());
-    }
 }
 
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data){

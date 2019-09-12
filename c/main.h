@@ -30,6 +30,7 @@ void menu_movetab(const gint movement);
 void menu_newtab(const gchar *title);
 void menu_openfile(void);
 void menu_reload(const int bypass);
+void startup(GtkApplication* app, gpointer data);
 void tab_switch(GtkNotebook *notebook, GtkWidget *page_content, guint page, gpointer data);
 void tab_update_labels(void);
 void toolbar_address_activate(void);
