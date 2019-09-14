@@ -181,6 +181,7 @@ void menu_openfile(void){
         WebKitWebView *view;
 
         filename = gtk_file_chooser_get_filename(chooser);
+        menu_newtab("");
         view = get_tab_view();
 
         strcpy(
