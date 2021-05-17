@@ -5,10 +5,6 @@
 #include "../../common/c/core.c"
 #include "../../common/c/gtk.c"
 
-void activate(GtkApplication* app, gpointer data){
-    gtk_window_present(GTK_WINDOW(window));
-}
-
 WebKitWebView* get_tab_view(void){
     return WEBKIT_WEB_VIEW(gtk_notebook_get_nth_page(
       notebook,
@@ -26,7 +22,7 @@ int main(int argc, char **argv){
     g_signal_connect(
       app,
       "activate",
-      G_CALLBACK(activate),
+      G_CALLBACK(gtk_activate),
       NULL
     );
     g_signal_connect(
